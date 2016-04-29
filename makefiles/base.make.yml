@@ -235,5 +235,8 @@ projects:
         version: ~
 
 # Themes
+    adminimal_theme:
+        version: ~
+
     omega:
-        version]: ~
+        version: ~
