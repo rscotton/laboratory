@@ -6,10 +6,6 @@ projects:
         version: ~
 
 # Contrib Modules
-    ac_newsletter:
-        subdir: contrib
-        version: ~
-
     addtoany:
         subdir: contrib
         version: ~
@@ -86,10 +82,6 @@ projects:
         subdir: contrib
         version: ~
 
-    google_authorship:
-        subdir: contrib
-        version: ~
-
     google_tag:
         subdir: contrib
         version: ~
@@ -154,10 +146,6 @@ projects:
         subdir: contrib
         version: ~
 
-    optimizely:
-        subdir: contrib
-        version: ~
-
     pathauto:
         subdir: contrib
         version: ~
@@ -191,10 +179,6 @@ projects:
         version: ~
 
     strongarm:
-        subdir: contrib
-        version: ~
-
-    taxonomy_csv:
         subdir: contrib
         version: ~
 
@@ -236,6 +220,9 @@ projects:
 
 # Themes
     adminimal_theme:
+        version: ~
+
+    adminimal_admin_menu:
         version: ~
 
     omega:
