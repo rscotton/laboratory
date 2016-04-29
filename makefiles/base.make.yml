@@ -1,0 +1,239 @@
+api: 2
+core: 7.x
+projects:
+# Core
+    drupal:
+        version: ~
+
+# Contrib Modules
+    ac_newsletter:
+        subdir: contrib
+        version: ~
+
+    addtoany:
+        subdir: contrib
+        version: ~
+
+    admin_menu:
+        subdir: contrib
+        version: ~
+
+    block_class:
+        subdir: contrib
+        version: ~
+
+    ctools:
+        subdir: contrib
+        version: ~
+
+    ckeditor:
+        subdir: contrib
+        version: ~
+
+    color_field:
+        subdir: contrib
+        version: ~
+
+    date:
+        subdir: contrib
+        version: ~
+
+    devel:
+        subdir: contrib
+        version: ~
+
+    entity:
+        subdir: contrib
+        version: ~
+
+    entity_view_mode:
+        subdir: contrib
+        version: ~
+
+    entityreference:
+        subdir: contrib
+        version: ~
+
+    features_extra:
+        subdir: contrib
+        version: ~
+
+    features:
+        subdir: contrib
+        version: ~
+
+    field_collection:
+        subdir: contrib
+        version: ~
+
+    field_group:
+        subdir: contrib
+        version: ~
+
+    find_content:
+        subdir: contrib
+        version: ~
+
+    flexslider:
+        subdir: contrib
+        version: ~
+
+    flippy:
+        subdir: contrib
+        version: ~
+
+    focal_point:
+        subdir: contrib
+        version: ~
+
+    google_authorship:
+        subdir: contrib
+        version: ~
+
+    google_tag:
+        subdir: contrib
+        version: ~
+
+    honeypot:
+        subdir: contrib
+        version: ~
+
+    image_link_formatter:
+        subdir: contrib
+        version: ~
+
+    image_url_formatter:
+        subdir: contrib
+        version: ~
+
+    imce:
+        subdir: contrib
+        version: ~
+
+    jquery_update:
+        subdir: contrib
+        version: ~
+
+    libraries:
+        subdir: contrib
+        version: ~
+
+    link:
+        subdir: contrib
+        version: ~
+
+    logo_block:
+        subdir: contrib
+        version: ~
+
+    menu_block:
+        subdir: contrib
+        version: ~
+
+    menu_icons:
+        subdir: contrib
+        version: ~
+
+    menu_target:
+        subdir: contrib
+        version: ~
+
+    metatag:
+        subdir: contrib
+        version: ~
+
+    module_filter:
+        subdir: contrib
+        version: ~
+
+    multiblock:
+        subdir: contrib
+        version: ~
+
+    node_export:
+        subdir: contrib
+        version: ~
+
+    optimizely:
+        subdir: contrib
+        version: ~
+
+    pathauto:
+        subdir: contrib
+        version: ~
+
+    rabbit_hole:
+        subdir: contrib
+        version: ~
+
+    redirect:
+        subdir: contrib
+        version: ~
+
+    site_map:
+        subdir: contrib
+        version: ~
+
+    smart_trim:
+        subdir: contrib
+        version: ~
+
+    smtp:
+        subdir: contrib
+        version: ~
+
+    soembed:
+        subdir: contrib
+        version: ~
+
+    special_menu_items:
+        subdir: contrib
+        version: ~
+
+    strongarm:
+        subdir: contrib
+        version: ~
+
+    taxonomy_csv:
+        subdir: contrib
+        version: ~
+
+    taxonomy_dupecheck:
+        subdir: contrib
+        version: ~
+
+    telephone:
+        subdir: contrib
+        version: ~
+
+    token:
+        subdir: contrib
+        version: ~
+
+    uuid:
+        subdir: contrib
+        version: ~
+
+    video_embed_field:
+        subdir: contrib
+        version: ~
+
+    views:
+        subdir: contrib
+        version: ~
+
+    webform:
+        subdir: contrib
+        version: ~
+
+    weight:
+        subdir: contrib
+        version: ~
+
+    xmlsitemap:
+        subdir: contrib
+        version: ~
+
+# Themes
+    omega:
+        version]: ~
