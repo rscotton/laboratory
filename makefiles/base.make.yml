@@ -50,6 +50,10 @@ projects:
         subdir: contrib
         version: ~
 
+    fast_404:
+        subdir: contrib
+        version: ~
+
     features_extra:
         subdir: contrib
         version: ~
