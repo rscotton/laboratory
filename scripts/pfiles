@@ -1,0 +1,44 @@
+#!/bin/bash
+
+#Note that $LOCAL_DEV_DIR must be set in .bash_profile for this to work
+
+#TODO: Rewrite to accommodate Wordpress AND Drupal!
+
+set -e # exit immediately if command exits with a non-zero status
+
+if [ -z "$1" ]
+then
+    ROOT=$(wp eval "print get_home_path();") #grab code root
+    ROOT=${ROOT%/} #strip trailing slash
+    echo "Root: $ROOT"
+    SITE=${ROOT##*/} #grab trailing directory name
+else
+    SITE=$1
+fi;
+echo "Site: $SITE"
+
+SITE_PID=$(terminus site info --site="$SITE" --field="id")
+echo "Pantheon Site Id: $SITE_PID"
+
+if [ -z "$2" ]
+then
+    ENV="dev"
+else
+    ENV=$2
+fi;
+echo "Pantheon Environment: $ENV"
+
+# Change into wp-content directory and pull down files
+cd $LOCAL_DEV_DIR/$SITE/wp-content
+rsync -rlvz --size-only --ipv4 --progress -e 'ssh -p 2222' $ENV.$SITE_PID@appserver.$ENV.$SITE_PID.drush.in:files/ uploads
+
+# Change permissions on uploads directory
+if [ -d "uploads" ]; then
+    chmod -R 777 uploads
+fi
+
+cd -; # Change into previous directory
+
+# Celebrate!
+echo "DONE!"
+osascript -e "display notification \"Files synced for $SITE\" with title \"Files Synced!\"";
