@@ -1,0 +1,20 @@
+#!/bin/bash	
+
+if [ -z $1 ]; then
+    echo "ERROR: First argument must be the name of the MySQL database you want to create."
+    exit
+elif [ -z $2 ]; then
+	echo "ERROR: Second argument must be the .sql file you want to import."
+    exit
+fi
+
+# Drop and create new database
+mysql -uroot -proot -e "DROP DATABASE IF EXISTS $1; CREATE DATABASE $1;"
+
+# Gzipped file or no?
+if [ ${2: -3} == ".gz" ]
+then #Gzipped import
+	pv $2 | gunzip | mysql -uroot -proot "$1"
+else #Standard import
+	pv $2 | mysql -uroot -proot "$1"
+fi
