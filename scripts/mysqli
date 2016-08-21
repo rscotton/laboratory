@@ -1,5 +1,6 @@
 #!/bin/bash	
 
+# Note: this script depends on you having set up an alias in your bash_profile named mysql, which points to the proper mysql executable
 if [ -z $1 ]; then
     echo "ERROR: First argument must be the name of the MySQL database you want to create."
     exit
@@ -12,7 +13,7 @@ fi
 mysql -uroot -proot -e "DROP DATABASE IF EXISTS $1; CREATE DATABASE $1;"
 
 # Gzipped file or no?
-if [ ${2: -3} == ".gz" ]
+if [ ${2: -3} == ".gz" ] || [ ${2: -5} == ".gzip" ]
 then #Gzipped import
 	pv $2 | gunzip | mysql -uroot -proot "$1"
 else #Standard import

@@ -1,25 +1,41 @@
 #!/bin/bash
 
-#Note that $LOCAL_DEV_DIR must be set in .bash_profile for this to work
-
-#TODO: Rewrite to accommodate Wordpress AND Drupal!
+# Note: $LOCAL_DEV_DIR must be set in .bash_profile for this to work properly
 
 set -e # exit immediately if command exits with a non-zero status
 
+# Save current directory to return to at end of script
+START_DIR="$PWD"
+
+# Change into site root if provided
 if [ -z "$1" ]
 then
-    ROOT=$(wp eval "print get_home_path();") #grab code root
-    ROOT=${ROOT%/} #strip trailing slash
-    echo "Root: $ROOT"
-    SITE=${ROOT##*/} #grab trailing directory name
+	echo "No site directory name provided, using current directory..."
 else
-    SITE=$1
+	cd $LOCAL_DEV_DIR/$1
 fi;
+
+# Gather site root, site name, CMS type
+ROOT=$(drush ev "print DRUPAL_ROOT")
+if [ "$ROOT" = "DRUPAL_ROOT" ] # meaning it's not defined in the context of where this script ran
+then
+	echo "Not a Drupal build, attempting to grab Wordpress root..."
+	ROOT=$(wp eval "print get_home_path();") #grab code root
+	CMS="Wordpress"
+else
+	CMS="Drupal"
+fi;
+echo "Confirmed CMS: $CMS"
+ROOT=${ROOT%/} #strip trailing slash
+echo "Root: $ROOT"
+SITE=${ROOT##*/} #grab trailing directory name
 echo "Site: $SITE"
 
+# Use terminus to get the Pantheon Site ID
 SITE_PID=$(terminus site info --site="$SITE" --field="id")
 echo "Pantheon Site Id: $SITE_PID"
 
+# Determine Site environment
 if [ -z "$2" ]
 then
     ENV="dev"
@@ -28,18 +44,31 @@ else
 fi;
 echo "Pantheon Environment: $ENV"
 
+# Determine the local database name
 cd $LOCAL_DEV_DIR/$SITE
-DB_NAME=$(wp eval 'echo DB_NAME;')
+if [ "$CMS" = "Drupal" ]
+then
+	DB_NAME=$(drush status db-name --format=list)
+else # Wordpress
+	DB_NAME=$(wp eval 'echo DB_NAME;')
+fi;
+echo "Local Database: $DB_NAME"
 
+# Ensure sqltemp directory exists, remove any previous database files that might be lingering
 mkdir -p $HOME/sqltemp
 rm ~/sqltemp/$SITE*.sql.gz > /dev/null 2>&1 ||
 
+# Create a new database backup and download it to sqltemp
 terminus site backups create --element=database --site=$SITE --env=$ENV &&
 terminus site backups get --element=database --site=$SITE --env=$ENV --to=$HOME/sqltemp --latest &&
 
+# Import database, remove backup file
 mysqli $DB_NAME ~/sqltemp/$SITE*.sql.gz
 rm ~/sqltemp/$SITE*.sql.gz
 
-cd -;
+# Change back to original directory
+cd $START_DIR;
+
+# Celebrate!
 osascript -e "display notification \"SQL synced for $SITE\" with title \"SQL synced!\"";
 #say "sequel synced";
