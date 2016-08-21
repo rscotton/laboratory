@@ -14,7 +14,7 @@ projects:
         subdir: contrib
         version: ~
 
-    admin_menu_toolbar:
+    adminimal_admin_menu:
         subdir: contrib
         version: ~
 
@@ -228,9 +228,6 @@ projects:
 
 # Themes
     adminimal_theme:
-        version: ~
-
-    adminimal_admin_menu:
         version: ~
 
     omega:
