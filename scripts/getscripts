@@ -16,7 +16,7 @@ echo
 for script in $SCRIPTS;
 do
     echo "Downloading $script to $HOME/bin/$script ..."
-    curl https://raw.githubusercontent.com/rscotton/laboratory/tree/master/scripts/$script > $script
+    curl https://raw.githubusercontent.com/rscotton/laboratory/master/scripts/$script > $script
     chmod 777 $script
 done
 
