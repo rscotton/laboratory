@@ -32,7 +32,7 @@ SITE=${ROOT##*/} #grab trailing directory name
 echo "Site: $SITE"
 
 # Use terminus to get the Pantheon Site ID
-SITE_PID=$(terminus site info --site="$SITE" --field="id")
+SITE_PID=$(terminus site:info $SITE --field="id")
 echo "Pantheon Site Id: $SITE_PID"
 
 # Determine Site environment
@@ -59,8 +59,8 @@ mkdir -p $HOME/sqltemp
 rm ~/sqltemp/$SITE*.sql.gz > /dev/null 2>&1 ||
 
 # Create a new database backup and download it to sqltemp
-terminus site backups create --element=database --site=$SITE --env=$ENV &&
-terminus site backups get --element=database --site=$SITE --env=$ENV --to=$HOME/sqltemp --latest &&
+terminus backup:create $SITE.$ENV --element=database  &&
+terminus backup:get $SITE.$ENV --element=database --to=$HOME/sqltemp/$SITE.sql.gz
 
 # Import database, remove backup file
 mysqli $DB_NAME ~/sqltemp/$SITE*.sql.gz
