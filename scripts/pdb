@@ -32,7 +32,7 @@ SITE=${ROOT##*/} #grab trailing directory name
 echo "Site: $SITE"
 
 # Use terminus to get the Pantheon Site ID
-SITE_PID=$(terminus site:info $SITE --field="id")
+SITE_PID=$(terminus site:info --field="id" $SITE)
 echo "Pantheon Site Id: $SITE_PID"
 
 # Determine Site environment
@@ -56,15 +56,15 @@ echo "Local Database: $DB_NAME"
 
 # Ensure sqltemp directory exists, remove any previous database files that might be lingering
 mkdir -p $HOME/sqltemp
-rm ~/sqltemp/$SITE*.sql.gz > /dev/null 2>&1 ||
+rm -f $HOME/sqltemp/${SITE}*.sql.gz
 
 # Create a new database backup and download it to sqltemp
-terminus backup:create $SITE.$ENV --element=database  &&
-terminus backup:get $SITE.$ENV --element=database --to=$HOME/sqltemp/$SITE.sql.gz
+terminus backup:create --element=database $SITE.$ENV
+terminus backup:get --element=database --to=${HOME}/sqltemp/${SITE}.sql.gz $SITE.$ENV
 
 # Import database, remove backup file
-mysqli $DB_NAME ~/sqltemp/$SITE*.sql.gz
-rm ~/sqltemp/$SITE*.sql.gz
+mysqli $DB_NAME $HOME/sqltemp/${SITE}.sql.gz
+rm -f $HOME/sqltemp/${SITE}*.sql.gz
 
 # Change back to original directory
 cd $START_DIR;

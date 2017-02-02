@@ -32,7 +32,7 @@ SITE=${ROOT##*/} #grab trailing directory name
 echo "Site: $SITE"
 
 # Use terminus to get the Pantheon Site ID
-SITE_PID=$(terminus site:info $SITE --field="id")
+SITE_PID=$(terminus site:info --field="id" $SITE)
 echo "Pantheon Site Id: $SITE_PID"
 
 # Determine Site environment
