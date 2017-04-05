@@ -4,6 +4,7 @@ SCRIPTS="mysqli
 pdb
 pfiles
 rewritebase.py
+remove-short-tags.pl
 getscripts"
 
 mkdir -p ~/bin
