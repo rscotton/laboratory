@@ -20,12 +20,14 @@ ROOT=$(drush ev "print DRUPAL_ROOT")
 if [ "$ROOT" = "DRUPAL_ROOT" ] # meaning it's not defined in the context of where this script ran
 then
 	echo "Not a Drupal build, attempting to grab Wordpress root..."
-	ROOT=$(wp eval "print get_home_path();") #grab code root
+	ROOT=$(wp eval "print get_home_path();") # grab code root
 	CMS="Wordpress"
+	CMS_VERSION=$(wp core version)
 else
 	CMS="Drupal"
+	CMS_VERSION=$(drush status drupal-version --format=list)
 fi;
-echo "Confirmed CMS: $CMS"
+echo "Confirmed CMS: $CMS $CMS_VERSION"
 ROOT=${ROOT%/} #strip trailing slash
 echo "Root: $ROOT"
 SITE=${ROOT##*/} #grab trailing directory name
