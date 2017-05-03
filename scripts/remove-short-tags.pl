@@ -24,6 +24,9 @@ for my $file (@files) {
         or Carp::croak("Read error with $file.orig $! $@");
 
     while (my $line = <$input>) {
+        # Replace <?PHP with <?php
+        $line =~ s/<\?PHP/<?php/g;
+
         # Replace <?= with <?php echo
         $line =~ s/<\?=/<?php echo /g;
 
