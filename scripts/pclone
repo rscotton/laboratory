@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# This script allows you to clone a site down by providing its Pantheon machine name only!
+
+set -eu
+
+if [ -z $1 ]; then
+    echo "ERROR: First argument must be the Pantheon machine name of the site you wish to clone locally."
+    exit
+fi
+
+SITE=$1;
+
+if [ -d $LOCAL_DEV_DIR/$SITE ]; then
+    echo "
+        Site directory $LOCAL_DEV_DIR/$SITE already exists. Try changing into that directory and running 'git pull'
+    "
+else
+	UUID=$(terminus site:info $SITE --field=id);
+	git clone ssh://codeserver.dev.$UUID@codeserver.dev.$UUID.drush.in:2222/~/repository.git $LOCAL_DEV_DIR/$SITE;
+fi

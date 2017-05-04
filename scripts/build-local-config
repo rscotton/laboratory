@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# Save current directory to return to at end of script
+START_DIR="$PWD"
+
+# Define local site directory name, exit if not provided!
+if [ -z "$1" ]; then
+    echo "No site name provided, using current directory as site name..."
+    SITE=${PWD##*/}
+else
+    SITE=$1
+fi
+
+#Define database name explicitly if you'd like - otherwise, default is site name with dashes stripped
+if [ -n "$2" ]; then
+    DB_NAME="$2"
+else
+	DB_NAME=${SITE//-/}
+fi
+
+#Does the directory exist? If not, exit with warning
+if [ ! -d $LOCAL_DEV_DIR/$SITE ]; then    
+	echo "
+		ERROR:
+		Local site directory $LOCAL_DEV_DIR/$SITE does not exist!
+	"
+    exit
+fi
+
+cd $LOCAL_DEV_DIR/$SITE
+
+if [ -f core/lib/Drupal.php ]; then # Drupal 8
+    #TODO: Add code to set up local Drupal 8 configuration
+    echo "CMS: Drupal 8 (not currently supported - will need to set up local configuration manually)"
+elif [ -f wp-config.php ]; then # Wordpress
+    echo "CMS: WordPress"
+    if [ ! -f wp-config-local.php ]; then
+        echo "No wp-config-local.php. creating..."
+        cat > wp-config-local.php << EOF
+<?php
+
+define('DB_NAME',           '${DB_NAME}');
+define('DB_USER',           'root');
+define('DB_PASSWORD',       'root');
+define('DB_HOST',           'localhost');
+define('DB_CHARSET',        'utf8');
+define('DB_COLLATE',        '');
+
+define('AUTH_KEY',          'type unique key here');
+define('SECURE_AUTH_KEY',   'type unique key here');
+define('LOGGED_IN_KEY',     'type unique key here');
+define('NONCE_KEY',         'type unique key here');
+define('AUTH_SALT',         'type unique key here');
+define('SECURE_AUTH_SALT',  'type unique key here');
+define('LOGGED_IN_SALT',    'type unique key here');
+define('NONCE_SALT',        'type unique key here');
+
+define('WP_HOME',           'http://${SITE}.dev');
+define('WP_SITEURL',        'http://${SITE}.dev');
+EOF
+        echo "wp-config-local.php created!"
+    else
+        echo "wp-config-local.php already exists!"
+    fi
+else # Assume Drupal 7 - unsure which file to pivot off of to define D7 off-bat
+    #TODO: Find file to easily identify D7, add code to set up local Drupal 7 configuration
+    echo "CMS: Drupal 7 (not currently supported - will need to set up local configuration manually)"
+fi
+
+cd $START_DIR;

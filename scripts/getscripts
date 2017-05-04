@@ -1,8 +1,12 @@
 #!/bin/bash
 
 SCRIPTS="mysqli
+build-local-config
+plogin
+pclone
 pdb
 pfiles
+pgetsite
 rewritebase.py
 remove-short-tags.pl
 getscripts"

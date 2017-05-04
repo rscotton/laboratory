@@ -8,8 +8,7 @@ set -e # exit immediately if command exits with a non-zero status
 START_DIR="$PWD"
 
 # Change into site root if provided
-if [ -z "$1" ]
-then
+if [ -z "$1" ]; then
 	echo "No site directory name provided, using current directory..."
 else
 	cd $LOCAL_DEV_DIR/$1
@@ -17,8 +16,7 @@ fi;
 
 # Gather site root, site name, CMS type
 ROOT=$(drush ev "print DRUPAL_ROOT")
-if [ "$ROOT" = "DRUPAL_ROOT" ] # meaning it's not defined in the context of where this script ran
-then
+if [ "$ROOT" = "DRUPAL_ROOT" ]; then # meaning it's not defined in the context of where this script ran
 	echo "Not a Drupal build, attempting to grab Wordpress root..."
 	ROOT=$(wp eval "print get_home_path();") # grab code root
 	CMS="Wordpress"
@@ -38,8 +36,7 @@ SITE_PID=$(terminus site:info --field="id" $SITE)
 echo "Pantheon Site Id: $SITE_PID"
 
 # Determine Site environment
-if [ -z "$2" ]
-then
+if [ -z "$2" ]; then
     ENV="dev"
 else
     ENV=$2
@@ -48,8 +45,7 @@ echo "Pantheon Environment: $ENV"
 
 # Determine the local database name
 cd $LOCAL_DEV_DIR/$SITE
-if [ "$CMS" = "Drupal" ]
-then
+if [ "$CMS" = "Drupal" ]; then
 	DB_NAME=$(drush status db-name --format=list)
 else # Wordpress
 	DB_NAME=$(wp eval 'echo DB_NAME;')

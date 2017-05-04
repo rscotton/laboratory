@@ -1,0 +1,76 @@
+#!/bin/bash
+
+set -e # exit immediately if command exits with a non-zero status
+
+# Save current directory to return to at end of script
+START_DIR="$PWD"
+
+# Placebo progress spinner ;)
+spinner()
+{
+    local pid=$1
+    local delay=0.75
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]
+    do
+        local temp=${spinstr#?}
+        printf " [%c]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
+
+# Define initial constants
+SITE="$1"
+DB_NAME=${SITE//-/}
+CLONE="pclone $SITE"
+
+# Define Pantheon environment
+if [ -n "$2" ]; then
+    ENV="$2"
+else
+    ENV="dev"
+fi
+
+cd $LOCAL_DEV_DIR
+
+plogin # Ensures that user is logged in - if not, this line will let you know that you need to create a machine token
+
+echo "refreshing site aliases..."
+terminus drush:aliases > /dev/null 2>&1 & spinner $! &&
+#echo "clearing terminus cache..."
+#terminus cli cache-clear > /dev/null 2>&1 & spinner $! &&
+echo "refreshing site list..."
+terminus site:list > /dev/null 2>&1 & spinner $! &&
+
+if [ -d $LOCAL_DEV_DIR/$SITE ]; then
+    echo "Directory for $SITE already exists. Pulling..."
+    cd $SITE
+    git pull
+else
+    eval $CLONE
+    cd $SITE
+fi
+
+# Add relevant config file if necessary
+build-local-config $SITE
+
+# ABBREVIATED PDB CODE, WILL WORK REGARDLESS OF WORKING LOCAL DB/FUNCTIONAL WP-CLI/DRUSH
+# Create a new database backup and download it to sqltemp
+terminus backup:create --element=database $SITE.$ENV
+terminus backup:get --element=database --to=${HOME}/sqltemp/${SITE}.sql.gz $SITE.$ENV
+
+# Import database, remove backup file
+mysqli $DB_NAME $HOME/sqltemp/${SITE}*.sql.gz
+rm -f $HOME/sqltemp/${SITE}*.sql.gz
+
+# At this point, you have a working local DB, meaning WP-CLI and Drush should work fine now
+# Use pfiles to grab db
+pfiles $SITE $ENV
+
+# Open your new site!
+open "http://$SITE.dev"
+
+cd $START_DIR

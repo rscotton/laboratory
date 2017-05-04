@@ -1,0 +1,6 @@
+#!/bin/bash
+
+loggedin=$(terminus auth:whoami 2>&1);
+if [[ $loggedin =~ .*You.are.not.logged.in.* ]]; then
+    terminus auth:login
+fi

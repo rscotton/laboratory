@@ -13,8 +13,7 @@ fi
 mysql -uroot -proot -e "DROP DATABASE IF EXISTS $1; CREATE DATABASE $1;"
 
 # Gzipped file or no?
-if [ ${2: -3} == ".gz" ] || [ ${2: -5} == ".gzip" ]
-then #Gzipped import
+if [ ${2: -3} == ".gz" ] || [ ${2: -5} == ".gzip" ]; then #Gzipped import
 	pv $2 | gunzip | mysql -uroot -proot "$1"
 else #Standard import
 	pv $2 | mysql -uroot -proot "$1"
