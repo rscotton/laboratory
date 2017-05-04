@@ -22,8 +22,15 @@ spinner()
     printf "    \b\b\b\b"
 }
 
+# Define local site directory name, exit if not provided!
+if [ -z "$1" ]; then
+    echo "No site name provided, using current directory as site name..."
+    SITE=${PWD##*/}
+else
+    SITE=$1
+fi
+
 # Define initial constants
-SITE="$1"
 DB_NAME=${SITE//-/}
 CLONE="pclone $SITE"
 
