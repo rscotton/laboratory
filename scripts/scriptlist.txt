@@ -1,10 +1,10 @@
-build-local-config
-getscripts
 mysqli
+build-local-config
+plogin
 pclone
 pdb
 pfiles
 pgetsite
-plogin
-remove-short-tags.pl
 rewritebase.py
+remove-short-tags.pl
+getscripts
