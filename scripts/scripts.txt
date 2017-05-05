@@ -8,3 +8,4 @@ pgetsite
 rewritebase.py
 remove-short-tags.pl
 getscripts
+scripts.txt

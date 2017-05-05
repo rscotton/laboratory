@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPTS=$(curl https://raw.githubusercontent.com/rscotton/laboratory/master/scripts/scriptlist.txt)
+SCRIPTS=$(curl https://raw.githubusercontent.com/rscotton/laboratory/master/scripts/scripts.txt)
 
 mkdir -p ~/bin
 cd ~/bin
@@ -9,8 +9,7 @@ echo '#######################################'
 echo '         getting scripts...'
 echo '#######################################'
 echo
-for script in $SCRIPTS;
-do
+for script in $SCRIPTS; do
     echo "Downloading $script to $HOME/bin/$script ..."
     curl https://raw.githubusercontent.com/rscotton/laboratory/master/scripts/$script > $script
     chmod 755 $script
