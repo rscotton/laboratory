@@ -5,6 +5,7 @@ pclone
 pdb
 pfiles
 pgetsite
+check-crawlability
 rewritebase.py
 remove-short-tags.pl
 getscripts

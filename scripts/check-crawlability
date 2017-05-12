@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# This script iterates over each live WordPress site associated
+# with any organization tied to the currently logged-in Terminus user
+# and checks the value of the search engine crawlability option
+# blog_public option.
+
+# Please note that this diagnostic script depends on two factors:
+# 1) The live environment has been initalized
+# 2) WP-CLI is functioning properly in the live environment
+
+echo "Getting site list..."
+
+SITES=$(terminus site:list --org=all --field=name)
+NOW=$(date +"%Y%m%d")
+REPORT_DIR="$HOME/crawlability_reports"
+mkdir -p $REPORT_DIR # Ensure directory is created
+FILENAME="$REPORT_DIR/crawlability-report-${NOW}.txt"
+
+echo "Begin looping through WordPress sites..."
+
+FORMAT="FORMAT: <pantheon-name> <blog_public option value>"
+echo $FORMAT
+echo $FORMAT > $FILENAME
+
+for SITE in $SITES; do
+	CMS=$(terminus site:info $SITE --field=Framework)
+	if [ $CMS = "wordpress" ]; then
+		LIVE_INIT=$(terminus env:info $SITE.live --field="Initialized")
+		if [ $LIVE_INIT = "true" ]; then
+			# WARNING: Some sites may not have WP-CLI functioning properly! If it fails, it will have an empty blog_public value.
+			BLOG_PUBLIC=$(terminus wp $SITE.live -- option get blog_public)
+			echo "$SITE $BLOG_PUBLIC"
+			echo "$SITE $BLOG_PUBLIC" >> $FILENAME
+		else
+			echo "$SITE does not have an initalized live environment! Skipping..."
+		fi
+	else
+		echo "$SITE is not a WordPress site! Skipping..."
+	fi
+done
+
+echo "List complete! You can find a saved report here: $FILENAME"
