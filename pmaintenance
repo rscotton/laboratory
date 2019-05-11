@@ -1,0 +1,89 @@
+#!/bin/bash
+
+set -e # If terminus throws an error, kill the script
+
+# Pull site name
+if [ -z "$1" ]; then
+    echo "No site name provided, using current directory as site name..."
+    SITE=${PWD##*/}
+else
+    SITE=$1
+fi
+
+# Deploy upstream updates
+echo "Applying any available upstream updates..."
+
+{ # try
+    terminus upstream:updates:apply $SITE.dev
+} || { # catch
+    echo "It looks like you are in SFTP mode."
+    echo "Do you want to switch to Git mode and apply upstream updates?"
+    echo "WARNING: Any pending updates not committed in SFTP mode will be deleted!"
+
+    while true; do
+        read -p "[y] to continue; [n] to quit:" response
+
+        case $response in
+            [Yy]* )
+                # Switch to git mode and apply upstream updates
+                echo "Switching to Git mode and applying any available upstream updates..."
+                terminus connection:set $SITE.dev git
+                terminus upstream:updates:apply $SITE.dev
+                break # Kill prompt loop
+                ;;
+            [Nn]* )
+                exit
+                ;;
+            * )
+                echo "Please answer with [y] or [n]."
+                ;;
+        esac
+    done
+}
+
+# Switch to SFTP mode
+echo "Switching to SFTP mode..."
+terminus connection:set $SITE.dev sftp
+
+# Update all plugins, repeatedly, until user signals to proceed
+function update_plugins {
+  	echo "Updating plugins..."
+	terminus wp $SITE.dev -- plugin update --all
+}
+
+update_plugins # First plugin update run
+
+echo "Did everything update?"
+
+while true; do
+    read -p "[y] to continue; [n] to re-run plugin updates:" response
+    case $response in
+        [Yy]* )
+            break # Kill prompt loop
+			;;
+        [Nn]* )
+			update_plugins
+			;;
+        * )
+			echo "Please answer with [y] or [n]."
+			;;
+    esac
+done
+
+# Commit code
+echo "Committing code..."
+terminus env:commit $SITE.dev --message="Plugin updates"
+
+# Switch back to git mode
+echo "Switching back to Git mode..."
+terminus connection:set $SITE.dev git
+
+# Clear cache
+echo "Clearing caches..."
+terminus env:clear-cache $SITE.dev
+
+# Finish up
+echo "Maintenance complete!"
+echo "Opening http://dev-${SITE}.pantheonsite.io in your web browser..."
+open "http://dev-${SITE}.pantheonsite.io"
+echo "Done!"
